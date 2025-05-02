@@ -1,35 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import TodoForm from './TodoForm';
+import RecipeForm from './RecipeForm'; // rename from TodoForm
 import './styles/App.css';
 
 
 const App = () => {
-  const [todos, setTodos] = useState([]);
+  const [adjustedIngredients, setAdjustedIngredients] = useState([]);
 
-  useEffect(() => {
-    // Fetch data from the Express server
-    axios.get('http://localhost:5000/todos')
-      .then(response => setTodos(response.data))
-      .catch(error => console.error(error));
-  }, []);
+  const handleCalculation = ({ ingredients, originalServings, desiredServings }) => {
+    const factor = desiredServings / originalServings;
 
-const addTodo = (newTodo) => {
-    setTodos([...todos, newTodo]);
+    const recalculated = ingredients.map((ingredient) => ({
+      name: ingredient.name,
+      adjustedQuantity: (parseFloat(ingredient.quantity) * factor).toFixed(2),
+      unit: ingredient.unit,
+    }));
+    
+
+    setAdjustedIngredients(recalculated);
   };
-
 
   return (
     <div className="container">
-      <h1>Recipe recalculator app</h1>
-      <TodoForm onAdd={addTodo} />
+      <h1>Recipe Recalculator App</h1>
+      <RecipeForm onCalculate={handleCalculation} />
+      <h2>Adjusted Ingredients:</h2>
       <ul>
-        {todos.map((todo) => (
-          <li key={todo._id}>{todo.task}</li>
+        {adjustedIngredients.map((item, index) => (
+          <li key={index}>
+            {item.name}: {item.adjustedQuantity} {item.unit}
+          </li>
         ))}
       </ul>
     </div>
   );
 };
-export default App;
 
+export default App;
