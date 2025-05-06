@@ -6,12 +6,12 @@ body {
   color: #3a3a3a;
 
 }
-container {
+.container {
   max-width: 800px;
   margin: 40px auto;
   padding: 30px;
   background-color: #ffffff;
-  border-radius: 12px;
+  border-radius: 1npm starty2px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
 }
 h1 {
