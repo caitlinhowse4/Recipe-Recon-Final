@@ -36,3 +36,39 @@
     transform: rotate(360deg);
   }
 }
+
+/* ✅ Move these outside */
+.auth-form {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.auth-form h2 {
+  margin-bottom: 1rem;
+}
+
+.auth-form input {
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.auth-form button {
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  background-color: #61dafb;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.auth-form button:hover {
+  background-color: #21a1f1;
+}
