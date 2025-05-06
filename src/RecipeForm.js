@@ -1,31 +1,41 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
-const RecipeForm = ({ onCalculate }) => {
-  const [ingredients, setIngredients] = useState([{ name: '', quantity: '', unit: '' }]);
-  const [originalServings, setOriginalServings] = useState('');
-  const [desiredServings, setDesiredServings] = useState('');
+const RecipeForm = ({
+  ingredients,
+  onCalculate,
+  originalServings,
+  desiredServings,
+  setOriginalServings,
+  setDesiredServings,
+}) => {
+  const [localIngredients, setLocalIngredients] = useState([
+    { name: '', quantity: '', unit: '' },
+  ]);
+
+  // If ingredients are passed in (from selected recipe), use them
+  useEffect(() => {
+    if (ingredients) {
+      setLocalIngredients(ingredients);
+    }
+  }, [ingredients]);
 
   const handleIngredientChange = (index, e) => {
-    const newIngredients = [...ingredients];
-    newIngredients[index][e.target.name] = e.target.value;
-    setIngredients(newIngredients);
+    const updated = [...localIngredients];
+    updated[index][e.target.name] = e.target.value;
+    setLocalIngredients(updated);
   };
 
   const addIngredient = () => {
-    setIngredients([...ingredients, { name: '', quantity: '' }]);
+    setLocalIngredients([...localIngredients, { name: '', quantity: '', unit: '' }]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const data = {
-      ingredients,
+    onCalculate({
+      ingredients: localIngredients,
       originalServings: parseFloat(originalServings),
       desiredServings: parseFloat(desiredServings),
-    };
-
-    onCalculate(data); // send data to App.js
+    });
   };
 
   return (
@@ -50,7 +60,7 @@ const RecipeForm = ({ onCalculate }) => {
       </div>
 
       <h3>Ingredients</h3>
-      {ingredients.map((ingredient, index) => (
+      {localIngredients.map((ingredient, index) => (
         <div key={index}>
           <input
             type="text"
@@ -86,7 +96,11 @@ const RecipeForm = ({ onCalculate }) => {
           </select>
         </div>
       ))}
-      <button type="button" onClick={addIngredient}>Add Ingredient</button>
+      {!ingredients && (
+        <button type="button" onClick={addIngredient}>
+          Add Ingredient
+        </button>
+      )}
       <button type="submit">Recalculate</button>
     </form>
   );
