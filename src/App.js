@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import RecipeForm from './RecipeForm';
+import SuggestionForum from './SuggestionForum';
 import './styles/App.css';
 
 const App = () => {
@@ -70,6 +71,7 @@ const App = () => {
       <div style={{ marginBottom: '20px' }}>
         <button onClick={() => setMode('browse')}>Browse Recipes</button>
         <button onClick={() => setMode('custom')}>Create Your Own</button>
+        <button onClick={() => setMode('suggest')}>Add A Suggestion</button>
       </div>
 
       {mode === 'browse' && (
@@ -113,6 +115,13 @@ const App = () => {
             ))}
           </ul>
         </>
+      )}
+
+      {(mode === 'suggest' &&
+          <>
+            <h3>Suggestion Forum</h3>
+            <SuggestionForum />
+          </>
       )}
     </div>
   );
