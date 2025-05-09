@@ -3,6 +3,7 @@ import axios from 'axios';
 import RecipeForm from './RecipeForm';
 import SuggestionForum from './SuggestionForum';
 import './styles/App.css';
+import SavedRecipes from "./SavedRecipes";
 
 const App = () => {
   const [mode, setMode] = useState('browse');
@@ -72,6 +73,7 @@ const App = () => {
         <button onClick={() => setMode('browse')}>Browse Recipes</button>
         <button onClick={() => setMode('custom')}>Create Your Own</button>
         <button onClick={() => setMode('suggest')}>Add A Suggestion</button>
+        <button onClick={() => setMode('save')}>Save Recipe</button>
       </div>
 
       {mode === 'browse' && (
@@ -122,6 +124,12 @@ const App = () => {
             <h3>Suggestion Forum</h3>
             <SuggestionForum />
           </>
+      )}
+      {(mode === 'save' &&
+          <>
+            <SavedRecipes/>
+          </>
+
       )}
     </div>
   );
