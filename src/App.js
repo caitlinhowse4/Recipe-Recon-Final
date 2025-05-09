@@ -4,6 +4,7 @@ import RecipeForm from './RecipeForm';
 import SuggestionForum from './SuggestionForum';
 import './styles/App.css';
 import SavedRecipes from "./SavedRecipes";
+import AuthForm from './AuthForm';
 
 const App = () => {
   const [mode, setMode] = useState('browse');
@@ -75,14 +76,19 @@ const App = () => {
   return (
     <div className="container">
       <h1>Recipe Recalculator App</h1>
-
       <div style={{ marginBottom: '20px' }}>
+        <button onClick={() => setMode('guest')}>Login</button>
         <button onClick={() => setMode('browse')}>Browse Recipes</button>
         <button onClick={() => setMode('custom')}>Create Your Own</button>
         <button onClick={() => setMode('suggest')}>Add A Suggestion</button>
         <button onClick={() => setMode('save')}>Save Recipe</button>
-      </div>
 
+      </div>
+        {mode === 'guest' &&(
+            <>
+                <AuthForm />
+            </>
+        )}
       {mode === 'browse' && (
         <>
           <input
