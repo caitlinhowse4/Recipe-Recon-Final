@@ -120,3 +120,8 @@ li {
   justify-content: space-between;
   align-items: center;
 }
+h3 {
+  color: #d63384;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;}
