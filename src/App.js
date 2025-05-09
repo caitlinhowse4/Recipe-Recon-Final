@@ -7,7 +7,7 @@ import SavedRecipes from "./SavedRecipes";
 
 const App = () => {
   const [mode, setMode] = useState('browse');
-  const [search, setSearch] = useState('chicken');
+  const [search, setSearch] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [adjustedIngredients, setAdjustedIngredients] = useState([]);
@@ -29,6 +29,13 @@ const App = () => {
       fetchRecipes();
     }
   }, [search, mode]);
+
+  useEffect(() => {
+    const savedRecipes = JSON.parse(localStorage.getItem('savedRecipes')) || [];
+    setRecipes(savedRecipes);
+  },[]);
+
+
 
   const extractIngredients = (recipe) => {
     const ingredients = [];
