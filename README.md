@@ -1,6 +1,11 @@
 
 ###### Instructions to launch web application ######
 
+
+
+
+
+
 Create a file named ".env" in the main folder in this file paste the following as it is the log in to the database that I created and you cant run it without:
 
     MONGO_URI=mongodb+srv://caitlinhowse4:mypassword@clustercaitlin.5xrxdbn.mongodb.net/RecipeRecon?retryWrites=true&w=majority
@@ -11,6 +16,8 @@ Create a file named ".env" in the main folder in this file paste the following a
 Navigate to root directory of project or open a terminal make sure to install dependencies by running the following commands:
 
     npm install
+
+    npm install cross-env
 
     npm install express mongoose bcryptjs jsonwebtoken cors dotenv
 
@@ -35,10 +42,24 @@ Run the backend server:
         ✅ Server running on port 5001
         ✅ Connected to MongoDB
 
+    if the port is taken by another process use:
+
+        npx kill-port 5001
+
 Run the front end with:
 
     npm run build
 
 Launch using:
+
+    npm start
+
+
+
+Once set up can just use 
+
+    node server.js
+
+then 
 
     npm start
