@@ -24,6 +24,12 @@ const Login = ({ onLoginSuccess }) => {
       setError(err.response?.data?.error || "Login failed");
     }
   };
+//guest registration
+  const handleGuestAccess = () => {
+    localStorage.setItem("guest", "true");
+    onLoginSuccess();
+    navigate("/recipes");
+  };
 
   return (
     <div>
@@ -48,6 +54,14 @@ const Login = ({ onLoginSuccess }) => {
       </form>
 
       <p>Don't have an account? <Link to="/register">Register here</Link></p>
+
+      <button
+        onClick={handleGuestAccess}
+        style={{ marginTop: "10px", backgroundColor: "#ccc", padding: "8px 16px", border: "none", borderRadius: "5px" }}
+      >
+        Continue as Guest
+      </button>
+
     </div>
   );
 };

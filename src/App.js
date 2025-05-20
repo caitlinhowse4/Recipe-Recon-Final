@@ -8,9 +8,10 @@ import RecipeForm from "./RecipeForm";
 import "./styles/App.css";
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token")|| !!localStorage.getItem("guest") === "true");
+  const [isGuest, setIsGuest] = useState(!!localStorage.getItem("guest"));
   const [recipes, setRecipes] = useState([]);
-  const [search, setSearch] = useState("chicken");
+  const [search, setSearch] = useState(" ");
   const [mode, setMode] = useState("browse");
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [adjustedIngredients, setAdjustedIngredients] = useState([]);
@@ -19,13 +20,21 @@ const App = () => {
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
+    setIsGuest(false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("guest");
     setIsAuthenticated(false);
+    setIsGuest(false);
     window.location.href = "/login";
   };
+
+  const handleGuestLogin = () => {
+    setIsGuest(true);
+    setIsAuthenticated(true);
+  };  
 
   useEffect(() => {
     if (mode === "browse" && isAuthenticated) {
@@ -83,11 +92,13 @@ const App = () => {
       <div className="container">
         <h1>Recipe Recalculator App</h1>
 
-        {isAuthenticated && (
+        {isAuthenticated && !isGuest && (
           <div style={{ marginBottom: "20px" }}>
             <button onClick={() => setMode("browse")}>Browse Recipes</button>
             <button onClick={() => setMode("custom")}>Create Your Own</button>
-            <button onClick={handleLogout}>Logout</button>
+            {!isGuest && (
+              <button onClick={handleLogout}>Logout</button>
+       )}
           </div>
         )}
 
@@ -97,7 +108,7 @@ const App = () => {
             element={isAuthenticated ? <Navigate to="/recipes" /> : <Navigate to="/login" />}
           />
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onGuestLogin={handleGuestLogin} />} />
           <Route
             path="/recipes"
             element={
