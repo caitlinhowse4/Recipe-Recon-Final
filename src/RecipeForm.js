@@ -58,6 +58,38 @@ const RecipeForm = ({
           required
         />
       </div>
+      <div style={{ marginTop: "10px" }}>
+        <p>Quick Convert:</p>
+        <button type="button" onClick={() => onCalculate({
+          ingredients: localIngredients,
+          originalServings: parseFloat(originalServings),
+          desiredServings: parseFloat(originalServings) / 2,
+        })}>
+          1/2
+        </button>
+        <button type="button" onClick={() => onCalculate({
+          ingredients: localIngredients,
+          originalServings: parseFloat(originalServings),
+          desiredServings: parseFloat(originalServings) / 3,
+        })}>
+          1/3
+        </button>
+        <button type="button" onClick={() => onCalculate({
+          ingredients: localIngredients,
+          originalServings: parseFloat(originalServings),
+          desiredServings: parseFloat(originalServings) / 4,
+        })}>
+          1/4
+        </button>
+        <button type="button" onClick={() => onCalculate({
+          ingredients: localIngredients,
+          originalServings: parseFloat(originalServings),
+          desiredServings: parseFloat(originalServings) * 2,
+        })}>
+          Double
+        </button>
+      </div>
+
 
       <h3>Ingredients</h3>
       {localIngredients.map((ingredient, index) => (
@@ -101,6 +133,8 @@ const RecipeForm = ({
           Add Ingredient
         </button>
       )}
+
+
       <button type="submit">Recalculate</button>
     </form>
   );
