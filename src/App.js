@@ -6,6 +6,8 @@ import Register from "./Register";
 import Login from "./Login";
 import RecipeForm from "./RecipeForm";
 import "./styles/App.css";
+import SuggestionForum from "./SuggestionForum";
+import SavedRecipes from "./SavedRecipes";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
@@ -87,6 +89,8 @@ const App = () => {
           <div style={{ marginBottom: "20px" }}>
             <button onClick={() => setMode("browse")}>Browse Recipes</button>
             <button onClick={() => setMode("custom")}>Create Your Own</button>
+            <button onClick={()  => setMode("save")}>Saved Recipes</button>
+            <button onClick={()  => setMode("suggest")}>Suggestion Forum</button>
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}
@@ -154,6 +158,22 @@ const App = () => {
                         ))}
                       </ul>
                     </>
+                  )}
+
+                  {(mode === "save" &&
+                   <>
+                    <h3>Saved Recipes</h3>
+                      <SavedRecipes/>
+                   </>
+
+                  )}
+                  
+                   {(mode === "suggest" &&
+                   <>
+                    <h3>Suggestion Forum</h3>
+                      <SuggestionForum />
+                   </>
+
                   )}
                 </>
               ) : (
