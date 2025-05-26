@@ -24,6 +24,13 @@ const SavedRecipes = () => {
         <div>
             <input
                 type="text"
+                value={nameRecipe}//unsure if I want to do it this way or based on the api
+                onChange={(e) => setRecipeName(e.target.value)}
+                placeholder="Name Recipe"
+                required
+            />
+            <input
+                type="text"
                 value={searchRecipe}
                 onChange={(e) => setSearchRecipe(e.target.value)}
             />

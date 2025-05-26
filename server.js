@@ -44,6 +44,13 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+//Suggestion Model
+const suggestionSchema = new mongoose.Schema({
+  text: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+const Suggestion = mongoose.model("Suggestion", suggestionSchema);
+
 // ✅ Middleware for Protected Routes
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -108,6 +115,34 @@ app.post('/login', async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Login failed. Please try again later." });
+  }
+});
+
+//Suggestion Route
+app.post('/suggestion', async (req, res) => {
+  const { suggestion } = req.body;
+
+  if(!suggestion || suggestion.trim() === ""){
+    return res.status(400).json({ error: "Suggestion box cannot be empty" });
+  }
+  try {
+    const newSuggest = new Suggestion({ text: suggestion });
+    await newSuggest.save();
+     res.json(newSuggest);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Suggestion failed. Please try again later." });
+  }
+});
+
+//Loads Saved Suggestions
+app.get('/suggestions', async (req, res) => {
+  try {
+    const loadSuggestions = await Suggestion.find().sort({createdAt:-1});
+    res.json(loadSuggestions);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to load saved suggestions." });
   }
 });
 

@@ -89,8 +89,8 @@ const App = () => {
           <div style={{ marginBottom: "20px" }}>
             <button onClick={() => setMode("browse")}>Browse Recipes</button>
             <button onClick={() => setMode("custom")}>Create Your Own</button>
-            <button onClick={()  => setMode("save")}>Saved Recipes</button>
-            <button onClick={()  => setMode("suggest")}>Suggestion Forum</button>
+            <button onClick={() => setMode("save")}>Saved Recipes</button>
+            <button onClick={() => setMode("suggest")}>Suggestion Forum</button>
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}
