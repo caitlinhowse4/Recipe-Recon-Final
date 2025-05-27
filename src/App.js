@@ -82,7 +82,7 @@ const App = () => {
     setAdjustedIngredients(recalculated);
   };
   const saveRecipe = async () => {
-    if (!nameRecipe.trim() || adjustedIngredients.length === 0) return alert("Please specify a name");
+    //if (!nameRecipe.trim() || adjustedIngredients.length === 0) return alert("Please specify a name");
     try{
       const response = await axios.post('/savedrecipes',{
         name: nameRecipe,
@@ -170,16 +170,16 @@ const App = () => {
                         {adjustedIngredients.map((item, index) => (
                           <li key={index}>
                             {item.name}: {item.adjustedQuantity} {item.unit}
-                          </li>,
-                          <input
-                           type="text"
-                           value={nameRecipe}
-                           onChange={(e) => setRecipeName(e.target.value)}
-                           placeholder="Name Recipe"
-                           required
-                          />,
-                          <button onClick={saveRecipe}>Save Recipe</button>
+                          </li>
                         ))}
+                        <input
+                            type="text"
+                            value={nameRecipe}
+                            onChange={(e) => setRecipeName(e.target.value)}
+                            placeholder="Name Recipe"
+                            required
+                        />
+                        <button onClick={saveRecipe}>Save Recipe</button>
                       </ul>
                     </>
                   )}

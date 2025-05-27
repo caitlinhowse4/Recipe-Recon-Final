@@ -149,8 +149,11 @@ app.post('/suggestion', async (req, res) => {
 app.post('/savedrecipes', async (req, res) => {
   const { name, ingredients } = req.body;
 
-  if(!name || ingredients.length === 0){
+  if(!name ||name.trim() ==="" ){
     return res.status(400).json({ error: "You must name the recipe" });
+  }
+  if(ingredients.length === 0){
+    return res.status(400).json({ error: "Please add ingredients" });
   }
   try {
     const newRecipe = new RecipesSaved({ name, ingredients });

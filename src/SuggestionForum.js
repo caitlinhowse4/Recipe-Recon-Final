@@ -46,6 +46,7 @@ const SuggestionForum = () => {
                 placeholder="Write a Suggestion"
                 value={suggestion}
                 onChange={(e)=>setSuggestion(e.target.value)}
+                required
                 />
                 <button type="submit">Add a Suggestion</button>
             </form>
