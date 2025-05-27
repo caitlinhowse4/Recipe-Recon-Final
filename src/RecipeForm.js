@@ -31,12 +31,20 @@ const RecipeForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  
+    const sanitized = localIngredients.map(ing => ({
+      name: ing.name || 'Unnamed',
+      quantity: ing.quantity || '1',
+      unit: ing.unit || 'pcs',
+    }));
+  
     onCalculate({
-      ingredients: localIngredients,
+      ingredients: sanitized,
       originalServings: parseFloat(originalServings),
       desiredServings: parseFloat(desiredServings),
     });
   };
+  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -114,7 +122,7 @@ const RecipeForm = ({
             name="unit"
             value={ingredient.unit || ''}
             onChange={(e) => handleIngredientChange(index, e)}
-            required
+            
           >
             <option value="">Unit</option>
             <option value="g">g</option>

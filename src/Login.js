@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import "./styles/Login.css"; // adjust path if needed
+
 
 const Login = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState("");
@@ -24,9 +26,15 @@ const Login = ({ onLoginSuccess }) => {
       setError(err.response?.data?.error || "Login failed");
     }
   };
+//guest access
+  const handleGuestAccess = () => {
+    localStorage.setItem("guest", "true");
+    onLoginSuccess();
+    navigate("/recipes");
+  };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleLogin}>
@@ -46,10 +54,17 @@ const Login = ({ onLoginSuccess }) => {
         />
         <button type="submit">Login</button>
       </form>
-
-      <p>Don't have an account? <Link to="/register">Register here</Link></p>
+  
+      <p className="link">
+        Don't have an account? <Link to="/register">Register here</Link>
+      </p>
+  
+      <button onClick={handleGuestAccess} className="guest-button">
+        Continue as Guest
+      </button>
     </div>
   );
+  
 };
 
 export default Login;
