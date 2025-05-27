@@ -6,6 +6,17 @@ const SuggestionForum = () => {
     const [suggestionList, setSuggestionList] = useState([]);
     const [error, setError] = useState("");
 
+    useEffect(() => {
+        const loadSuggestions = async () => {
+            try {
+                const response = await axios.get("http://localhost:5001/suggestions");
+                setSuggestionList(response.data);
+            } catch (err) {
+                setError(err.response?.data?.error || "Failed to load suggestions");
+            }
+        }
+        loadSuggestions();
+    }, []);
     const handleSuggest = async(e) => {
         e.preventDefault();
         const newSuggestion = suggestion.trim();
@@ -15,26 +26,16 @@ const SuggestionForum = () => {
         }
         try{
             const response = await axios.post("http://localhost:5001/suggestion",{
-                 suggestion: suggestion,
+                 suggestion: newSuggestion,
             });
-            console.log(response.data);
+            //console.log(response.data);
             setSuggestionList((prev) => [...prev, response.data]);
             setSuggestion('');
+            setError('');
         } catch(err){
             setError(err.response?.data?.error || "Failed to submit suggestion");
         }
     };
-    useEffect(() => {
-        const loadSuggestions = async() => {
-            try{
-                const response = await axios.get("http://localhost:5001/suggestions");
-                    setSuggestionList(response.data);  
-            } catch (err) {
-                setError(err.response?.data?.error || "Failed to load suggestions");
-            }
-        }
-    })
-
 
     return(
         <div>
@@ -50,7 +51,7 @@ const SuggestionForum = () => {
             </form>
             <ul>
                 {suggestionList.map((suggestion, index) => (
-                    <li key={index}>{suggestion}</li>//Show all suggestions
+                    <li key={index}>{suggestion.text}</li>//Show all suggestions
                 ))}
             </ul>
         </div>

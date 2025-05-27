@@ -18,6 +18,8 @@ const App = () => {
   const [adjustedIngredients, setAdjustedIngredients] = useState([]);
   const [originalServings, setOriginalServings] = useState(4);
   const [desiredServings, setDesiredServings] = useState(4);
+  const [recipesSaved, setRecipesSaved] = useState([]);
+  const [nameRecipe, setRecipeName] = useState('');
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
@@ -78,6 +80,20 @@ const App = () => {
       unit: ingredient.unit,
     }));
     setAdjustedIngredients(recalculated);
+  };
+  const saveRecipe = async () => {
+    if (!nameRecipe.trim() || adjustedIngredients.length === 0) return alert("Please specify a name");
+    try{
+      const response = await axios.post('/savedrecipes',{
+        name: nameRecipe,
+        ingredients: adjustedIngredients,
+      });
+      setRecipesSaved([...setRecipesSaved, response.data]);
+      setRecipeName('');
+    } catch(err){
+      console.error("Error saving recipe:", err);
+      //setError(err.response?.data?.error || "Failed to save recipe");
+    }
   };
 
   return (
@@ -154,7 +170,15 @@ const App = () => {
                         {adjustedIngredients.map((item, index) => (
                           <li key={index}>
                             {item.name}: {item.adjustedQuantity} {item.unit}
-                          </li>
+                          </li>,
+                          <input
+                           type="text"
+                           value={nameRecipe}
+                           onChange={(e) => setRecipeName(e.target.value)}
+                           placeholder="Name Recipe"
+                           required
+                          />,
+                          <button onClick={saveRecipe}>Save Recipe</button>
                         ))}
                       </ul>
                     </>
