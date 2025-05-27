@@ -54,8 +54,15 @@ const Suggestion = mongoose.model("Suggestion", suggestionSchema);
 //RecipesSaved Model
 const RecipesSavedSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  ingredients: [{ type: String, adjustedQuantity: String, unit: String }],
+  ingredients: [
+    {
+      name: { type: String, required: true },
+      adjustedQuantity: { type: String, required: true },
+      unit: { type: String, required: true }
+    }
+  ],
 });
+
 const RecipesSaved = mongoose.model("RecipesSaved", RecipesSavedSchema);
 
 // ✅ Middleware for Protected Routes
@@ -145,28 +152,27 @@ app.post('/suggestion', async (req, res) => {
   }
 });
 
-//Saved Recipes Route
 app.post('/savedrecipes', async (req, res) => {
   const { name, ingredients } = req.body;
 
-  if(!name ||name.trim() ==="" ){
+  if (!name || name.trim() === "") {
     return res.status(400).json({ error: "You must name the recipe" });
   }
-  if(ingredients.length === 0){
+  if (!ingredients || ingredients.length === 0) {
     return res.status(400).json({ error: "Please add ingredients" });
   }
+
   try {
     const newRecipe = new RecipesSaved({ name, ingredients });
     await newRecipe.save();
     res.json(newRecipe);
-
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token, message: " successful" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Saving a recipe has failed. Please try again later." });
   }
 });
+
+
 
 //Loads Saved Suggestions
 app.get('/suggestions', async (req, res) => {

@@ -8,17 +8,19 @@ import RecipeForm from "./RecipeForm";
 import "./styles/App.css";
 import SuggestionForum from "./SuggestionForum";
 import SavedRecipes from "./SavedRecipes";
+import Recipefile from "./Recipefile";
+
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
   const [recipes, setRecipes] = useState([]);
+  const [recipesSaved, setRecipesSaved] = useState([]);
   const [search, setSearch] = useState("chicken");
   const [mode, setMode] = useState("browse");
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [adjustedIngredients, setAdjustedIngredients] = useState([]);
   const [originalServings, setOriginalServings] = useState(4);
   const [desiredServings, setDesiredServings] = useState(4);
-  const [recipesSaved, setRecipesSaved] = useState([]);
   const [nameRecipe, setRecipeName] = useState('');
 
   const handleLoginSuccess = () => {
@@ -82,17 +84,23 @@ const App = () => {
     setAdjustedIngredients(recalculated);
   };
   const saveRecipe = async () => {
-    //if (!nameRecipe.trim() || adjustedIngredients.length === 0) return alert("Please specify a name");
-    try{
-      const response = await axios.post('/savedrecipes',{
+    if (!nameRecipe.trim() || adjustedIngredients.length === 0) {
+      alert("Please enter a name and adjust ingredients");
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:5001/savedrecipes', {
         name: nameRecipe,
         ingredients: adjustedIngredients,
       });
-      setRecipesSaved([...setRecipesSaved, response.data]);
+
+      alert("Recipe saved!");
       setRecipeName('');
-    } catch(err){
-      console.error("Error saving recipe:", err);
-      //setError(err.response?.data?.error || "Failed to save recipe");
+      setAdjustedIngredients([]);
+    } catch (err) {
+      console.error("Error saving recipe:", err.response?.data || err.message);
+      alert("Failed to save recipe.");
     }
   };
 
@@ -173,11 +181,11 @@ const App = () => {
                           </li>
                         ))}
                         <input
-                            type="text"
-                            value={nameRecipe}
-                            onChange={(e) => setRecipeName(e.target.value)}
-                            placeholder="Name Recipe"
-                            required
+                          type="text"
+                          value={nameRecipe}
+                          onChange={(e) => setRecipeName(e.target.value)}
+                          placeholder="Name Recipe"
+                          required
                         />
                         <button onClick={saveRecipe}>Save Recipe</button>
                       </ul>
@@ -185,18 +193,18 @@ const App = () => {
                   )}
 
                   {(mode === "save" &&
-                   <>
-                    <h3>Saved Recipes</h3>
-                      <SavedRecipes/>
-                   </>
+                    <>
+                      <h3>Saved Recipes</h3>
+                      <SavedRecipes />
+                    </>
 
                   )}
-                  
-                   {(mode === "suggest" &&
-                   <>
-                    <h3>Suggestion Forum</h3>
+
+                  {(mode === "suggest" &&
+                    <>
+                      <h3>Suggestion Forum</h3>
                       <SuggestionForum />
-                   </>
+                    </>
 
                   )}
                 </>
@@ -205,6 +213,8 @@ const App = () => {
               )
             }
           />
+            <Route path="/savedrecipes/:id" element={<Recipefile />} />
+
         </Routes>
       </div>
     </Router>
