@@ -44,6 +44,27 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+//Suggestion Model
+const suggestionSchema = new mongoose.Schema({
+  text: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+const Suggestion = mongoose.model("Suggestion", suggestionSchema);
+
+//RecipesSaved Model
+const RecipesSavedSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  ingredients: [
+    {
+      name: { type: String, required: true },
+      adjustedQuantity: { type: String, required: true },
+      unit: { type: String, required: true }
+    }
+  ],
+});
+
+const RecipesSaved = mongoose.model("RecipesSaved", RecipesSavedSchema);
+
 // ✅ Middleware for Protected Routes
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -111,6 +132,81 @@ app.post('/login', async (req, res) => {
   }
 });
 
+//Suggestion Route
+app.post('/suggestion', async (req, res) => {
+  const { suggestion } = req.body;
+
+  if(!suggestion || suggestion.trim() === ""){
+    return res.status(400).json({ error: "Suggestion box cannot be empty" });
+  }
+  try {
+    const newSuggest = new Suggestion({ text: suggestion });
+    await newSuggest.save();
+     res.json(newSuggest);
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    res.json({ token, message: " successful" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Suggestion failed. Please try again later." });
+  }
+});
+
+app.post('/savedrecipes', async (req, res) => {
+  const { name, ingredients } = req.body;
+
+  if (!name || name.trim() === "") {
+    return res.status(400).json({ error: "You must name the recipe" });
+  }
+  if (!ingredients || ingredients.length === 0) {
+    return res.status(400).json({ error: "Please add ingredients" });
+  }
+
+  try {
+    const newRecipe = new RecipesSaved({ name, ingredients });
+    await newRecipe.save();
+    res.json(newRecipe);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Saving a recipe has failed. Please try again later." });
+  }
+});
+
+
+
+//Loads Saved Suggestions
+app.get('/suggestions', async (req, res) => {
+  try {
+    const loadSuggestions = await Suggestion.find().sort({createdAt:-1});
+    res.json(loadSuggestions);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to load saved suggestions." });
+  }
+});
+
+//Loads Saved Recipes
+app.get('/savedrecipes', async (req, res) => {
+  try {
+    const loadrecipes = await RecipesSaved.find();
+    res.json(loadrecipes);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to load saved recipes." });
+  }
+});
+
+//Loads a pressed single Recipes by id
+app.get('/savedrecipes/:id', async (req, res) => {
+  try {
+    const loadrecipe = await RecipesSaved.findById(req.params.id);
+    if (!loadrecipe) return res.status(404).json({ error: "Failed to load saved recipe" });
+    res.json(loadrecipe);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to load recipe." });
+  }
+});
 // ✅ Protected Route Example
 app.get('/protected', authenticateToken, (req, res) => {
   res.json({ message: "You have accessed a protected route!", userId: req.user.userId });
