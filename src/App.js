@@ -22,6 +22,9 @@ const App = () => {
   const [recipes, setRecipes] = useState([]);
   const [recipesSaved, setRecipesSaved] = useState([]);
   const [nameRecipe, setRecipeName] = useState('');
+  const [search, setSearch] = useState(" "); // ← Add this line
+
+
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
@@ -56,12 +59,6 @@ const App = () => {
       fetchRecipes();
     }
   }, [search, mode, isAuthenticated]);
-
-
-
-
-
-
 
   const extractIngredients = (recipe) => {
     const ingredients = [];
@@ -101,24 +98,6 @@ const App = () => {
   };
 
 
-  // const extractIngredients = (recipe) => {
-  //   const ingredients = [];
-  //   for (let i = 1; i <= 20; i++) {
-  //     const name = recipe[`strIngredient${i}`];
-  //     const measure = recipe[`strMeasure${i}`];
-  //     if (name && name.trim()) {
-  //       const [qty, ...unitParts] = (measure || "").trim().split(" ");
-  //       ingredients.push({
-  //         name,
-  //         quantity: qty || "1",
-  //         unit: unitParts.join(" ") || "",
-  //       });
-  //     }
-  //   }
-  //   return ingredients;
-  // };
-
-
   const handleRecipeClick = (recipe) => {
     const ingredients = extractIngredients(recipe);
     setSelectedIngredients(ingredients);
@@ -126,14 +105,6 @@ const App = () => {
     setDesiredServings(4);
     setAdjustedIngredients([]);
   };
-
-  // const handleRecipeClick = (recipe) => {
-  //   const ingredients = extractIngredients(recipe);
-  //   setSelectedIngredients(ingredients);
-  //   setOriginalServings(4);
-  //   setDesiredServings(4);
-  //   setAdjustedIngredients([]);
-  // };
 
   const handleCalculation = ({ ingredients, originalServings, desiredServings }) => {
     const factor = desiredServings / originalServings;
@@ -144,17 +115,6 @@ const App = () => {
     }));
     setAdjustedIngredients(recalculated);
   };
-
-  //const handleCalculation = ({ ingredients, originalServings, desiredServings }) => {
-  //   const factor = desiredServings / originalServings;
-  //   const recalculated = ingredients.map((ingredient) => ({
-  //     name: ingredient.name,
-  //     adjustedQuantity: (parseFloat(ingredient.quantity) * factor).toFixed(2),
-  //     unit: ingredient.unit,
-  //   }));
-  //   setAdjustedIngredients(recalculated);
-  // };
-
   const saveRecipe = async () => {
     if (!nameRecipe.trim() || adjustedIngredients.length === 0) {
       alert("Please enter a name and adjust ingredients");
@@ -175,22 +135,18 @@ const App = () => {
       alert("Failed to save recipe.");
     }
   };
-
-
   return (
     <Router>
       <div className="container">
         <h1>Recipe Recalculator App</h1>
 
-        {isAuthenticated && !isGuest && (
+        {isAuthenticated && (
           <div style={{ marginBottom: "20px" }}>
             <button onClick={() => setMode("browse")}>Browse Recipes</button>
             <button onClick={() => setMode("custom")}>Create Your Own</button>
-            {!isGuest && (
-              <button onClick={handleLogout}>Logout</button>
-            )}
             <button onClick={() => setMode("save")}>Saved Recipes</button>
             <button onClick={() => setMode("suggest")}>Suggestion Forum</button>
+            <button onClick={handleLogout}>Logout</button>
           </div>
         )}
 
@@ -200,6 +156,7 @@ const App = () => {
             path="/"
             element={isAuthenticated ? <Navigate to="/recipes" /> : <Navigate to="/login" />}
           />
+          <Route path="/savedrecipes/:id" element={<Recipefile />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onGuestLogin={handleGuestLogin} />} />
           <Route
@@ -240,6 +197,20 @@ const App = () => {
                       </div>
                     </>
                   )}
+                  {mode === "save" && (
+                    <>
+                      <h3>Saved Recipes</h3>
+                      <SavedRecipes />
+                    </>
+                  )}
+
+                  {mode === "suggest" && (
+                    <>
+                      <h3>Suggestion Forum</h3>
+                      <SuggestionForum />
+                    </>
+                  )}
+
 
                   {(mode === "custom" || selectedIngredients.length > 0) && (
                     <>
@@ -259,32 +230,17 @@ const App = () => {
                             {item.name}: {item.adjustedQuantity} {item.unit}
                           </li>
                         ))}
-                        <input
-                          type="text"
-                          value={nameRecipe}
-                          onChange={(e) => setRecipeName(e.target.value)}
-                          placeholder="Name Recipe"
-                          required
-                        />
-                        <button onClick={saveRecipe}>Save Recipe</button>
                       </ul>
+                      <input
+                        type="text"
+                        value={nameRecipe}
+                        onChange={(e) => setRecipeName(e.target.value)}
+                        placeholder="Name your recipe"
+                        required
+                      />
+                      <button onClick={saveRecipe}>Save Recipe</button>
+
                     </>
-                  )}
-
-                  {(mode === "save" &&
-                    <>
-                      <h3>Saved Recipes</h3>
-                      <SavedRecipes />
-                    </>
-
-                  )}
-
-                  {(mode === "suggest" &&
-                    <>
-                      <h3>Suggestion Forum</h3>
-                      <SuggestionForum />
-                    </>
-
                   )}
                 </>
               ) : (
@@ -292,178 +248,11 @@ const App = () => {
               )
             }
           />
-          <Route path="/savedrecipes/:id" element={<Recipefile />} />
-
         </Routes>
       </div>
     </Router>
   );
+};
 
 
-
-
-
-
-  /////////////////////////////////
-
-
-
-
-  // const handleRecipeClick = (recipe) => {
-  //   const ingredients = extractIngredients(recipe);
-  //   setSelectedIngredients(ingredients);
-  //   setOriginalServings(4);
-  //   setDesiredServings(4);
-  //   setAdjustedIngredients([]);
-  // };
-
-  // const handleCalculation = ({ ingredients, originalServings, desiredServings }) => {
-  //   const factor = desiredServings / originalServings;
-  //   const recalculated = ingredients.map((ingredient) => ({
-  //     name: ingredient.name,
-  //     adjustedQuantity: (parseFloat(ingredient.quantity) * factor).toFixed(2),
-  //     unit: ingredient.unit,
-  //   }));
-  //   setAdjustedIngredients(recalculated);
-  // };
-
-
-  // const saveRecipe = async () => {
-  //   if (!nameRecipe.trim() || adjustedIngredients.length === 0) {
-  //     alert("Please enter a name and adjust ingredients");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await axios.post('http://localhost:5001/savedrecipes', {
-  //       name: nameRecipe,
-  //       ingredients: adjustedIngredients,
-  //     });
-
-  //     alert("Recipe saved!");
-  //     setRecipeName('');
-  //     setAdjustedIngredients([]);
-  //   } catch (err) {
-  //     console.error("Error saving recipe:", err.response?.data || err.message);
-  //     alert("Failed to save recipe.");
-  //   }
-  // };
-
-  // return (
-  //   <Router>
-  //     <div className="container">
-  //       <h1>Recipe Recalculator App</h1>
-
-  //       {isAuthenticated && (
-  //         <div style={{ marginBottom: "20px" }}>
-  //           <button onClick={() => setMode("browse")}>Browse Recipes</button>
-  //           <button onClick={() => setMode("custom")}>Create Your Own</button>
-  //           <button onClick={() => setMode("save")}>Saved Recipes</button>
-  //           <button onClick={() => setMode("suggest")}>Suggestion Forum</button>
-  //           <button onClick={handleLogout}>Logout</button>
-  //         </div>
-  //       )}
-
-  // <Routes>
-  //   <Route
-  //     path="/"
-  //     element={isAuthenticated ? <Navigate to="/recipes" /> : <Navigate to="/login" />}
-  //   />
-  //   <Route path="/register" element={<Register />} />
-  //   <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
-  //   <Route
-  //     path="/recipes"
-  //     element={
-  //       isAuthenticated ? (
-  //         <>
-  //           {mode === "browse" && (
-  //             <>
-  //               <input
-  //                 type="text"
-  //                 placeholder="Search recipes"
-  //                 value={search}
-  //                 onChange={(e) => setSearch(e.target.value)}
-  //                 style={{ padding: "10px", marginBottom: "20px" }}
-  //               />
-  //               <div className="gallery">
-  //                 {recipes.map((recipe, index) => (
-  //                   <div
-  //                     key={index}
-  //                     className="card"
-  //                     onClick={() => handleRecipeClick(recipe)}
-  //                   >
-  //                     <img
-  //                       src={recipe.strMealThumb}
-  //                       alt={recipe.strMeal}
-  //                       style={{ width: "100%" }}
-  //                     />
-  //                     <h4>{recipe.strMeal}</h4>
-  //                     <p>
-  //                       {recipe.strArea} | {recipe.strCategory}
-  //                     </p>
-  //                   </div>
-  //                 ))}
-  //               </div>
-  //             </>
-  //           )}
-
-            {/* {(mode === "custom" || selectedIngredients.length > 0) && (
-              <>
-                <RecipeForm
-                  ingredients={mode === "custom" ? undefined : selectedIngredients}
-                  onCalculate={handleCalculation}
-                  originalServings={originalServings}
-                  desiredServings={desiredServings}
-                  setOriginalServings={setOriginalServings}
-                  setDesiredServings={setDesiredServings}
-                /> */}
-
-                {/* <h2>Adjusted Ingredients:</h2>
-                <ul>
-                  {adjustedIngredients.map((item, index) => (
-                    <li key={index}>
-                      {item.name}: {item.adjustedQuantity} {item.unit}
-                    </li>
-                  ))}
-                  <input
-                    type="text"
-                    value={nameRecipe}
-                    onChange={(e) => setRecipeName(e.target.value)}
-                    placeholder="Name Recipe"
-                    required
-                  />
-                  <button onClick={saveRecipe}>Save Recipe</button>
-                </ul>
-              </>
-            )}
-
-            {(mode === "save" &&
-              <>
-                <h3>Saved Recipes</h3>
-                <SavedRecipes />
-              </>
-
-            )}
-
-            {(mode === "suggest" &&
-              <>
-                <h3>Suggestion Forum</h3>
-                <SuggestionForum />
-              </>
-
-            )}
-          </>
-        ) : ( *///}
-//{/* //</>                <Navigate to="/login" />
-     //           )
-    //  }
-//     />
-//     <Route path="/savedrecipes/:id" element={<Recipefile />} />
-
-//   </Routes> */}
-//       </div >
-//     </Router >
-//   );
-// };
-
-// export default App;
+export default App;

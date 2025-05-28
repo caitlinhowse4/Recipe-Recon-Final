@@ -136,21 +136,20 @@ app.post('/login', async (req, res) => {
 app.post('/suggestion', async (req, res) => {
   const { suggestion } = req.body;
 
-  if(!suggestion || suggestion.trim() === ""){
+  if (!suggestion || suggestion.trim() === "") {
     return res.status(400).json({ error: "Suggestion box cannot be empty" });
   }
-  try {
-    const newSuggest = new Suggestion({ text: suggestion });
-    await newSuggest.save();
-     res.json(newSuggest);
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token, message: " successful" });
+  try {
+    const newSuggestion = new Suggestion({ text: suggestion });
+    await newSuggestion.save();
+    res.json(newSuggestion);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Suggestion failed. Please try again later." });
+    console.error("Error saving suggestion:", err.message);
+    res.status(500).json({ error: "Failed to save suggestion" });
   }
 });
+
 
 app.post('/savedrecipes', async (req, res) => {
   const { name, ingredients } = req.body;
