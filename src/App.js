@@ -6,6 +6,7 @@ import Register from "./Register";
 import Login from "./Login";
 import RecipeForm from "./RecipeForm";
 import "./styles/App.css";
+import "./styles/DishcoveryModel.css";
 import SuggestionForum from "./SuggestionForum";
 import SavedRecipes from "./SavedRecipes";
 import Recipefile from "./Recipefile";
@@ -22,7 +23,9 @@ const App = () => {
   const [recipes, setRecipes] = useState([]);
   const [recipesSaved, setRecipesSaved] = useState([]);
   const [nameRecipe, setRecipeName] = useState('');
-  const [search, setSearch] = useState(" "); // ← Add this line
+  const [search, setSearch] = useState(" ");
+  const [showDishcovery, setShowDishcovery] = useState(false);
+ // ← Add this line
 
 
 
@@ -249,6 +252,39 @@ const App = () => {
             }
           />
         </Routes>
+        <button
+          onClick={() => setShowDishcovery(true)}
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            width: "60px",
+            height: "60px",
+            fontSize: "24px",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+            zIndex: 999,
+          }}
+        >
+        </button>
+
+        {showDishcovery && (
+          <div className="dishcovery-backdrop">
+            <div className="dishcovery-modal">
+              <button className="close-button" onClick={() => setShowDishcovery(false)}>✖</button>
+              <iframe
+                src="https://copilotstudio.microsoft.com/environments/Default-5e022ca1-5c04-4f87-8db7-d588726274e3/bots/cr932_dishcovery/webchat?__version__=2"
+                frameBorder="0"
+                title="Dishcovery AI"
+                style={{ width: "100%", height: "100%" }}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </Router>
   );
