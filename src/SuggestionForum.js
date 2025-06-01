@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-//const axios = require("axios");
+
 const SuggestionForum = () => {
     const [suggestion, setSuggestion] = useState("");
     const [suggestionList, setSuggestionList] = useState([]);
@@ -24,11 +24,12 @@ const SuggestionForum = () => {
             setError("Please write a suggestion");
             return;
         }
+        setSuggestion('');
         try{
             const response = await axios.post("http://localhost:5001/suggestion",{
                  suggestion: newSuggestion,
             });
-            //console.log(response.data);
+            
             setSuggestionList((prev) => [...prev, response.data]);
             setSuggestion('');
             setError('');
@@ -46,7 +47,6 @@ const SuggestionForum = () => {
                 placeholder="Write a Suggestion"
                 value={suggestion}
                 onChange={(e)=>setSuggestion(e.target.value)}
-                required
                 />
                 <button type="submit">Add a Suggestion</button>
             </form>

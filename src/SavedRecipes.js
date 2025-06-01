@@ -4,21 +4,20 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const SavedRecipes = () => {
-    const [recipesSaved, setRecipesSaved] = useState([]);
-    const [searchRecipe, setSearchRecipe] = useState('');
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        axios.get('http://localhost:5001/savedrecipes')
-            .then(res => setRecipesSaved(res.data))
-            .catch(err => console.error("Error fetching saved recipes:", err));
-    }, []);
-
-    const filteredRecipes = recipesSaved.filter(r =>
-        r.name.toLowerCase().includes(searchRecipe.toLowerCase())
-    );
-
-    return (
+  const [recipesSaved, setRecipesSaved] = useState([]);
+  const [searchRecipe, setSearchRecipe] = useState('');
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    axios.get('http://localhost:5001/savedrecipes')
+         .then(res => setRecipesSaved(res.data))
+         .catch(err => console.error("Error fetching saved recipes:", err));
+        }, []);
+      
+  const filteredRecipes = recipesSaved.filter(recipe =>
+    recipe.name.toLowerCase().includes(searchRecipe.toLowerCase())
+  );
+  return (
         <div>
           <input
             type="text"

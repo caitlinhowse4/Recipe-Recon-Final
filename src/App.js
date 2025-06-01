@@ -22,7 +22,8 @@ const App = () => {
   const [recipes, setRecipes] = useState([]);
   const [recipesSaved, setRecipesSaved] = useState([]);
   const [nameRecipe, setRecipeName] = useState('');
-  const [search, setSearch] = useState(" "); // ← Add this line
+  const [search, setSearch] = useState(" ");
+  const [error, setError] = useState("");
 
 
 
@@ -115,9 +116,10 @@ const App = () => {
     }));
     setAdjustedIngredients(recalculated);
   };
+
   const saveRecipe = async () => {
     if (!nameRecipe.trim() || adjustedIngredients.length === 0) {
-      alert("Please enter a name and adjust ingredients");
+      setError("Please recalculate the ingredients and name your recipe before saving.");
       return;
     }
 
@@ -127,12 +129,12 @@ const App = () => {
         ingredients: adjustedIngredients,
       });
 
-      alert("Recipe saved!");
+      setError("Recipe saved!");
       setRecipeName('');
       setAdjustedIngredients([]);
     } catch (err) {
       console.error("Error saving recipe:", err.response?.data || err.message);
-      alert("Failed to save recipe.");
+      setError("Failed to save recipe.");
     }
   };
   return (
@@ -231,6 +233,7 @@ const App = () => {
                           </li>
                         ))}
                       </ul>
+                      {error && <p style={{ color: "red" }}>{error}</p>}
                       <input
                         type="text"
                         value={nameRecipe}
