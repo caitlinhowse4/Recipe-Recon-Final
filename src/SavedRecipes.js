@@ -9,7 +9,11 @@ const SavedRecipes = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    axios.get('http://localhost:5001/savedrecipes')
+    const savetoken = localStorage.getItem("token");
+    axios.get('http://localhost:5001/savedrecipes', {
+      headers: {
+        Authorization: `Bearer ${savetoken}`,
+      },})
          .then(res => setRecipesSaved(res.data))
          .catch(err => console.error("Error fetching saved recipes:", err));
         }, []);

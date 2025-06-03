@@ -61,6 +61,7 @@ const RecipesSavedSchema = new mongoose.Schema({
       unit: { type: String, required: true }
     }
   ],
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 const RecipesSaved = mongoose.model("RecipesSaved", RecipesSavedSchema);
@@ -151,8 +152,9 @@ app.post('/suggestion', async (req, res) => {
 });
 
 
-app.post('/savedrecipes', async (req, res) => {
+app.post('/savedrecipes', authenticateToken, async (req, res) => {
   const { name, ingredients } = req.body;
+  const userId = req.user.userId;
 
   if (!name || name.trim() === "") {
     return res.status(400).json({ error: "You must name the recipe" });
@@ -162,7 +164,7 @@ app.post('/savedrecipes', async (req, res) => {
   }
 
   try {
-    const newRecipe = new RecipesSaved({ name, ingredients });
+    const newRecipe = new RecipesSaved({ name, ingredients, userId });
     await newRecipe.save();
     res.json(newRecipe);
   } catch (err) {
@@ -185,9 +187,9 @@ app.get('/suggestions', async (req, res) => {
 });
 
 //Loads Saved Recipes
-app.get('/savedrecipes', async (req, res) => {
+app.get('/savedrecipes', authenticateToken, async (req, res) => {
   try {
-    const loadrecipes = await RecipesSaved.find();
+    const loadrecipes = await RecipesSaved.find({userId: req.user.userId});
     res.json(loadrecipes);
   } catch (err) {
     console.error(err.message);
@@ -196,10 +198,10 @@ app.get('/savedrecipes', async (req, res) => {
 });
 
 //Loads a pressed single Recipes by id
-app.get('/savedrecipes/:id', async (req, res) => {
+app.get('/savedrecipes/:id', authenticateToken, async (req, res) => {
   try {
     const loadrecipe = await RecipesSaved.findById(req.params.id);
-    if (!loadrecipe) return res.status(404).json({ error: "Failed to load saved recipe" });
+    if (!loadrecipe || loadrecipe.userId.toString() !== req.user.userId) return res.status(404).json({ error: "Failed to load saved recipe" });
     res.json(loadrecipe);
   } catch (err) {
     console.error(err.message);

@@ -125,11 +125,15 @@ const App = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5001/savedrecipes', {
+      const savetoken = localStorage.getItem("token");
+      await axios.post('http://localhost:5001/savedrecipes', {
         name: nameRecipe,
         ingredients: adjustedIngredients,
+      }, {
+        headers: {
+          Authorization: `Bearer ${savetoken}`,
+        },
       });
-
       setError("Recipe saved!");
       setRecipeName('');
       setAdjustedIngredients([]);
