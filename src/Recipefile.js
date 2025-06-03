@@ -8,12 +8,24 @@ const Recipefile = () => {
     const [recipe, setRecipe] = useState(null);
   
     useEffect(() => {
-      axios.get(`http://localhost:5001/savedrecipes/${id}`)
+      const savetoken = localStorage.getItem("token");
+      axios.get(`http://localhost:5001/savedrecipes/${id}`,{
+        headers: {
+          Authorization: `Bearer ${savetoken}`,
+        },
+      })
         .then(res => setRecipe(res.data))
-        .catch(err => console.log(err));
+        .catch(err => console.log("Failed to load saved recipe or recipe does not exist. Please try again later", err));
     }, [id]);
   
-    if (!recipe) return <>Loading...</>;
+    if (!recipe){
+      return (
+        <div>
+          <button onClick={() => navigate("/recipes")}>← Back to Saved Recipes</button>;
+          <p style={{ color: "red" }}>Failed to load saved recipe or recipe does not exist. Please try again later.</p>
+        </div>
+      )
+    }
   
     return (
       <div>
