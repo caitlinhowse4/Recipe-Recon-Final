@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+// This component allows users to submit suggestions and view a list of all suggestions
 const SuggestionForum = () => {
     const [suggestion, setSuggestion] = useState("");
     const [suggestionList, setSuggestionList] = useState([]);
     const [error, setError] = useState("");
-
+// Fetch suggestions from the server when the component mounts
     useEffect(() => {
         const loadSuggestions = async () => {
             try {
@@ -17,6 +17,7 @@ const SuggestionForum = () => {
         }
         loadSuggestions();
     }, []);
+    // Handle suggestion submission
     const handleSuggest = async(e) => {
         e.preventDefault();
         const newSuggestion = suggestion.trim();
@@ -37,7 +38,7 @@ const SuggestionForum = () => {
             setError(err.response?.data?.error || "Failed to submit suggestion");
         }
     };
-
+// Render the suggestion form and the list of suggestions
     return(
         <div>
             {error && <p style={{ color: "red" }}>{error}</p>}

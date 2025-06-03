@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+//constructor for the RecipeForm component
 const RecipeForm = ({
   ingredients,
   onCalculate,
@@ -18,17 +19,17 @@ const RecipeForm = ({
       setLocalIngredients(ingredients);
     }
   }, [ingredients]);
-
+//handles change to any input field in the ingredients list
   const handleIngredientChange = (index, e) => {
     const updated = [...localIngredients];
     updated[index][e.target.name] = e.target.value;
     setLocalIngredients(updated);
   };
-
+//adds a new ingredient to the ingredients list
   const addIngredient = () => {
     setLocalIngredients([...localIngredients, { name: '', quantity: '', unit: '' }]);
   };
-
+//handles the form submission, sanitizes the input, and calls the onCalculate function with the adjusted values
   const handleSubmit = (e) => {
     e.preventDefault();
   
@@ -45,7 +46,7 @@ const RecipeForm = ({
     });
   };
   
-
+  // Render the form with input fields for original and desired servings, quick convert buttons, and ingredient inputs
   return (
     <form onSubmit={handleSubmit}>
       <div>

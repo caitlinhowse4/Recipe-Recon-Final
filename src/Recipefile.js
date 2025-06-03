@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-
+// This component displays a saved recipe and its ingredients
 const Recipefile = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [recipe, setRecipe] = useState(null);
-  
+  // Fetch the saved recipe by ID when the component mounts
     useEffect(() => {
       const savetoken = localStorage.getItem("token");
       axios.get(`http://localhost:5001/savedrecipes/${id}`,{
@@ -17,7 +17,7 @@ const Recipefile = () => {
         .then(res => setRecipe(res.data))
         .catch(err => console.log("Failed to load saved recipe or recipe does not exist. Please try again later", err));
     }, [id]);
-  
+  // If recipe is not found, display an error message
     if (!recipe){
       return (
         <div>
@@ -26,7 +26,7 @@ const Recipefile = () => {
         </div>
       )
     }
-  
+  // Render the recipe name and its ingredients
     return (
       <div>
         <button onClick={() => navigate("/recipes")}>← Back to Saved Recipes</button>
