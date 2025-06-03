@@ -18,7 +18,7 @@ const Recipefile = () => {
     return (
       <div>
         <button onClick={() => navigate("/recipes")}>← Back to Saved Recipes</button>
-        <h2>{recipe.name}</h2>
+        <h3>{recipe.name}</h3>
         <h2>Ingredients List:</h2>
         <ul>
           {recipe.ingredients.map((ingredient, index) => (
