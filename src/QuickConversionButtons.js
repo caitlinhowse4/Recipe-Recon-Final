@@ -1,5 +1,5 @@
 import React from "react";
-
+// This component provides quick conversion buttons for common fractions and doubling
 const QuickConversionButtons = ({ onSelect }) => {
   const options = [
     { label: "1/2", value: 0.5 },
@@ -7,7 +7,7 @@ const QuickConversionButtons = ({ onSelect }) => {
     { label: "1/4", value: 0.25 },
     { label: "Double", value: 2 },
   ];
-
+  // Define the quick conversion options
   return (
     <div style={{ margin: "10px 0" }}>
       <p>Quick Conversion:</p>
