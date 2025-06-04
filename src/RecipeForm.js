@@ -44,7 +44,7 @@ const token = localStorage.getItem("token");
     const sanitized = localIngredients.map(ing => ({
       name: ing.name || 'Unnamed',
       quantity: ing.quantity || '1',
-  unit: ing.unit?.trim() || 'pcs', // ✅ Make sure it's a string
+      unit: ing.unit?.trim() || 'unit', // ✅ Make sure it's a string
       
     }));
 
@@ -217,12 +217,12 @@ const token = localStorage.getItem("token");
           />
           <select
             name="unit"
-            value={ingredient.unit || ''}
+            value={ingredient.unit || 'unit'}
             onChange={(e) => handleIngredientChange(index, e)}
               required // ✅ add this
 
           >
-            <option value="">Unit</option>
+            <option value="unit">Unit</option>
             <option value="g">g</option>
             <option value="kg">kg</option>
             <option value="ml">ml</option>

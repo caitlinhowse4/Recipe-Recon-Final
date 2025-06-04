@@ -83,7 +83,7 @@ const App = () => {
           // If the first part is a number, use it
           if (!isNaN(parsedQty)) {
             quantity = parsedQty.toString();
-            unit = parts.slice(1).join(" ") || "pcs"; // if no unit, default to pcs
+            unit = parts.slice(1).join(" ") || "unit"; // if no unit, default to pcs
           } else {
             // if not a number, assume full measure is unit
             quantity = "1";
@@ -109,6 +109,8 @@ const App = () => {
     setOriginalServings(4);
     setDesiredServings(4);
     setAdjustedIngredients([]);
+    setMode("custom"); // ✅ switch view to the custom mode so form shows up
+
   };
   // Effect to fetch saved recipes when the component mounts
   const handleCalculation = ({ ingredients, originalServings, desiredServings }) => {
@@ -223,41 +225,43 @@ const App = () => {
                   )}
 
 
-                  {(mode === "custom" || selectedIngredients.length > 0) && (
-                    <>
-                      <RecipeForm
-                        ingredients={mode === "custom" ? undefined : selectedIngredients}
-                        onCalculate={handleCalculation}
-                        originalServings={originalServings}
-                        desiredServings={desiredServings}
-                        setOriginalServings={setOriginalServings}
-                        setDesiredServings={setDesiredServings}
-                        tags={tags}
-                        setTags={setTags}
-                        newTag={newTag} // ✅
-                        setNewTag={setNewTag} // ✅
-                      />
+                  {mode === "custom" && (
+  <>
+    <RecipeForm
+      ingredients={selectedIngredients.length > 0 ? selectedIngredients : undefined}
+      onCalculate={handleCalculation}
+      originalServings={originalServings}
+      desiredServings={desiredServings}
+      setOriginalServings={setOriginalServings}
+      setDesiredServings={setDesiredServings}
+      tags={tags}
+      setTags={setTags}
+      newTag={newTag}
+      setNewTag={setNewTag}
+    />
 
-                      <h2>Adjusted Ingredients:</h2>
-                      <ul>
-                        {adjustedIngredients.map((item, index) => (
-                          <li key={index}>
-                            {item.name}: {item.adjustedQuantity} {item.unit}
-                          </li>
-                        ))}
-                      </ul>
-                      {error && <p style={{ color: "red" }}>{error}</p>}
-                      <input
-                        type="text"
-                        value={nameRecipe}
-                        onChange={(e) => setRecipeName(e.target.value)}
-                        placeholder="Name your recipe"
-                        required
-                      />
-                      <button onClick={saveRecipe}>Save Recipe</button>
+    <h2>Adjusted Ingredients:</h2>
+    <ul>
+      {adjustedIngredients.map((item, index) => (
+        <li key={index}>
+          {item.name}: {item.adjustedQuantity} {item.unit}
+        </li>
+      ))}
+    </ul>
 
-                    </>
-                  )}
+    {error && <p style={{ color: "red" }}>{error}</p>}
+
+    <input
+      type="text"
+      value={nameRecipe}
+      onChange={(e) => setRecipeName(e.target.value)}
+      placeholder="Name your recipe"
+      required
+    />
+    <button onClick={saveRecipe}>Save Recipe</button>
+  </>
+)}
+
                 </>
               ) : (
                 <Navigate to="/login" />

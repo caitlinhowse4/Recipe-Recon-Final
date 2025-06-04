@@ -13,14 +13,15 @@ const SavedRecipes = () => {
   useEffect(() => {
   const savetoken = localStorage.getItem("token");
   axios.get('http://localhost:5001/savedrecipes', {
-    headers: {
-      Authorization: `Bearer ${savetoken}`,
-    },
+  headers: {
+    Authorization: `Bearer ${savetoken}`,
+  },
+})
+  .then(res => {
+    console.log("Fetched Recipes:", res.data); // update this 👇
+    res.data.forEach(r => console.log(r.name, "→ tags:", r.tags));
+    setRecipesSaved(res.data);
   })
-    .then(res => {
-      console.log("Fetched Recipes:", res.data); // 👈 CHECK HERE
-      setRecipesSaved(res.data);
-    })
     .catch(err => console.error("Error fetching saved recipes:", err));
 }, []);
 
@@ -34,17 +35,21 @@ const SavedRecipes = () => {
   return matchesSearch && matchesTag;
 });
 
+const allTags = Array.from(new Set(
+  recipesSaved.flatMap(r => r.tags || [])
+));
 
   return (
     <div>
       <div style={{ marginBottom: "10px" }}>
         <span>Filter by tag:</span>
         <button onClick={() => setSelectedTag(null)}>All</button>
-        {["Dinner", "Vegan", "Dairy Free"].map(tag => (
-          <button key={tag} onClick={() => setSelectedTag(tag)}>
-            #{tag}
-          </button>
-        ))}
+        {allTags.map(tag => (
+  <button key={tag} onClick={() => setSelectedTag(tag)}>
+    #{tag}
+  </button>
+))}
+
       </div>
 
       <input
