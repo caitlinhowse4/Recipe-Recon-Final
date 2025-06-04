@@ -11,6 +11,12 @@ const PORT = process.env.PORT || 5001;
 const JWT_SECRET = process.env.JWT_SECRET;
 const MONGO_URI = process.env.MONGO_URI;
 
+
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+const fs = require('fs');
+
+
 if (!MONGO_URI) {
   console.error("❌ MONGO_URI is not defined in the environment");
   process.exit(1);
@@ -23,6 +29,7 @@ if (!JWT_SECRET) {
 
 app.use(cors());
 app.use(express.json());
+
 
 // ✅ Connect to MongoDB
 mongoose
@@ -63,6 +70,7 @@ const RecipesSavedSchema = new mongoose.Schema({
   ],
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   tags: [String],
+  imagePath: {type: String},
 });
 
 const RecipesSaved = mongoose.model("RecipesSaved", RecipesSavedSchema);
@@ -178,6 +186,24 @@ app.post('/savedrecipes', authenticateToken, async (req, res) => {
   }
 });
 
+app.post('/savedrecipes/:id/cover', authenticateToken, upload.single('cover'), async (req, res) => {
+  try {
+    const findRecipe = await RecipesSaved.findById(req.params.id);
+    if(!findRecipe){
+      return res.status(400).json({ error: "Recipe not found"});
+    }
+    if(findRecipe.userId.toString() !== req.user.userId) {
+      return res.status(403).json({ error: "You are not authorized to upload a cover for this recipe." });
+    }
+    findRecipe.imagePath = req.file.path;//saves the path of the image
+    await findRecipe.save();
+    res.json({imagePath: findRecipe.imagePath});
+  } catch (err) {
+    res.status(500).json({ error: "Uploading a cover has failed. Please try again later." });
+  }
+});
+
+
 
 
 //Loads Saved Suggestions
@@ -217,6 +243,23 @@ app.get('/savedrecipes/:id', authenticateToken, async (req, res) => {
 app.get('/protected', authenticateToken, (req, res) => {
   res.json({ message: "You have accessed a protected route!", userId: req.user.userId });
 });
+
+app.get('/user-image/:id'), authenticateToken, async (req, res) => {
+  try {
+    const cover = await RecipesSaved.findById(req.params.id);
+    if (!cover || !cover.imagePath) {
+      return res.status(404).json({ error: "Cover not found" });
+    }
+    if(cover.userId.toString() !== req.user.userId){
+      return res.status(403).json({ error: "You are not authorized to access this cover." });
+    }
+    res.sendFile(path.resolve(cover.imagePath));
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Failed to load recipe." });
+  }
+}
+
 
 // ✅ Serve React Frontend
 app.use(express.static(path.join(__dirname, 'build')));
