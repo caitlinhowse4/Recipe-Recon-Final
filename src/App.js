@@ -26,13 +26,16 @@ const App = () => {
   const [search, setSearch] = useState(" ");
   const [showDishcovery, setShowDishcovery] = useState(false);
   const [error, setError] = useState("");
+  const [tags, setTags] = useState([]);
+  const [newTag, setNewTag] = useState('');
 
-// Function to handle successful login
+
+  // Function to handle successful login
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
     setIsGuest(false);
   };
-// Function to handle user logout
+  // Function to handle user logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("guest");
@@ -40,12 +43,12 @@ const App = () => {
     setIsGuest(false);
     window.location.href = "/login";
   };
-// Function to handle guest login
+  // Function to handle guest login
   const handleGuestLogin = () => {
     setIsGuest(true);
     setIsAuthenticated(true);
   };
-// Effect to fetch recipes when the component mounts or when search changes
+  // Effect to fetch recipes when the component mounts or when search changes
   useEffect(() => {
     if (mode === "browse" && isAuthenticated) {
       const fetchRecipes = async () => {
@@ -61,7 +64,7 @@ const App = () => {
       fetchRecipes();
     }
   }, [search, mode, isAuthenticated]);
-// Effect to fetch saved recipes when the component mounts
+  // Effect to fetch saved recipes when the component mounts
   const extractIngredients = (recipe) => {
     const ingredients = [];
 
@@ -87,7 +90,7 @@ const App = () => {
             unit = measure;
           }
         }
-// Push the ingredient object to the array
+        // Push the ingredient object to the array
         ingredients.push({
           name,
           quantity,
@@ -99,7 +102,7 @@ const App = () => {
     return ingredients;
   };
 
-// Effect to fetch saved recipes when the component mounts
+  // Effect to fetch saved recipes when the component mounts
   const handleRecipeClick = (recipe) => {
     const ingredients = extractIngredients(recipe);
     setSelectedIngredients(ingredients);
@@ -107,7 +110,7 @@ const App = () => {
     setDesiredServings(4);
     setAdjustedIngredients([]);
   };
-// Effect to fetch saved recipes when the component mounts
+  // Effect to fetch saved recipes when the component mounts
   const handleCalculation = ({ ingredients, originalServings, desiredServings }) => {
     const factor = desiredServings / originalServings;
     const recalculated = ingredients.map((ingredient) => ({
@@ -117,7 +120,7 @@ const App = () => {
     }));
     setAdjustedIngredients(recalculated);
   };
-// Effect to fetch saved recipes when the component mounts
+  // Effect to fetch saved recipes when the component mounts
   const saveRecipe = async () => {
     if (!nameRecipe.trim() || adjustedIngredients.length === 0) {
       setError("Please recalculate the ingredients and name your recipe before saving.");
@@ -129,6 +132,7 @@ const App = () => {
       await axios.post('http://localhost:5001/savedrecipes', {
         name: nameRecipe,
         ingredients: adjustedIngredients,
+        tags, // 
       }, {
         headers: {
           Authorization: `Bearer ${savetoken}`,
@@ -228,6 +232,10 @@ const App = () => {
                         desiredServings={desiredServings}
                         setOriginalServings={setOriginalServings}
                         setDesiredServings={setDesiredServings}
+                        tags={tags}
+                        setTags={setTags}
+                        newTag={newTag} // ✅
+                        setNewTag={setNewTag} // ✅
                       />
 
                       <h2>Adjusted Ingredients:</h2>
