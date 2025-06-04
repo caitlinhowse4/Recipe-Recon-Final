@@ -3,13 +3,13 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "./styles/Login.css"; // adjust path if needed
 
-
+// This component handles user login and guest access
 const Login = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+// Handle the login form submission
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -17,7 +17,7 @@ const Login = ({ onLoginSuccess }) => {
         username,
         password,
       });
-
+// Save the token in localStorage
       const { token } = response.data;
       localStorage.setItem("token", token);
       onLoginSuccess();
@@ -32,7 +32,7 @@ const Login = ({ onLoginSuccess }) => {
     onLoginSuccess();
     navigate("/recipes");
   };
-
+// Render the login form with input fields for username and password
   return (
     <div className="login-container">
       <h2>Login</h2>

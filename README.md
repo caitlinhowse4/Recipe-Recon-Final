@@ -1,5 +1,48 @@
+# Recipe Recon #
+Recipe recon is a full-stack MERN based web app that allows users to browse adjust save & create Recipes with Ingredient scaling.
+
+## Overview
+
+Recipe recon allows users to
+- Create an account and log in
+- Use the web app as a guest 
+- Browse recipes from an external API
+- Asjust ingredient quantities based on desired servings
+- Save custom recipes with recalculated values
+- Quickly re portion recipes with quick conversion buttons
+- Submit feednack suggestions
+- Chat with an AI bot for help.
+
+## Technologies that were used
+*Frontend*
+- reactReact  
+- React Router DOM  
+- Axios  
+
+*Backend:*
+- Node.js  
+- Express  
+- MongoDB (Mongoose ODM)  
+- JWT for authentication  
+
+# Example useage
+- log in or continue as a guest
+- search for a meal (example: "chicken")
+- Click card and scroll to the bottom to see ingredients
+- Alternatively click "Create your own" and select your ingredients measurements and serving sizes before pressing "Recalculate
+- adjust servings to your prefrence 
+- Click "saved recipe" to browse and veiw your saved recipes
+- Use the suggestion forum to submit feedback
+
 
 ## Instructions for launch web application for the first time##
+
+### Prerequisites  
+- Node.js  
+- MongoDB (Atlas or local)  
+- npm / yarn
+
+## Next
 
 (1)Create a file named ".env" in the main folder in this file paste the following as it is the log in to the database that I created and you cant run it without:
 
@@ -69,3 +112,11 @@ If there are issues with launching programming:
         The port might is taken by another process use:
 
             npx kill-port 5001        
+
+# Authors 
+
+Caitlin Howse
+Lauryne Ysabelle Fernandico
+Feba Santhosh
+
+

@@ -1,12 +1,12 @@
 // src/Register.js
 import React, { useState } from "react";
 import axios from "axios";
-
+// This component handles user registration
 const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+// Handle the registration form submission
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
@@ -20,7 +20,7 @@ const Register = () => {
       setError(err.response?.data?.error || "Registration failed");
     }
   };
-
+//  Render the registration form with input fields for username and password
   return (
     <div>
       <h2>Register</h2>

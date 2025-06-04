@@ -11,7 +11,7 @@ import SuggestionForum from "./SuggestionForum";
 import SavedRecipes from "./SavedRecipes";
 import Recipefile from "./Recipefile";
 
-
+// Main App component that manages the application state and routing
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token") || !!localStorage.getItem("guest") === "true");
   const [isGuest, setIsGuest] = useState(!!localStorage.getItem("guest"));
@@ -26,13 +26,16 @@ const App = () => {
   const [search, setSearch] = useState(" ");
   const [showDishcovery, setShowDishcovery] = useState(false);
   const [error, setError] = useState("");
+  const [tags, setTags] = useState([]);
+  const [newTag, setNewTag] = useState('');
 
 
+  // Function to handle successful login
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
     setIsGuest(false);
   };
-
+  // Function to handle user logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("guest");
@@ -40,12 +43,12 @@ const App = () => {
     setIsGuest(false);
     window.location.href = "/login";
   };
-
+  // Function to handle guest login
   const handleGuestLogin = () => {
     setIsGuest(true);
     setIsAuthenticated(true);
   };
-
+  // Effect to fetch recipes when the component mounts or when search changes
   useEffect(() => {
     if (mode === "browse" && isAuthenticated) {
       const fetchRecipes = async () => {
@@ -61,7 +64,7 @@ const App = () => {
       fetchRecipes();
     }
   }, [search, mode, isAuthenticated]);
-
+  // Effect to fetch saved recipes when the component mounts
   const extractIngredients = (recipe) => {
     const ingredients = [];
 
@@ -80,14 +83,14 @@ const App = () => {
           // If the first part is a number, use it
           if (!isNaN(parsedQty)) {
             quantity = parsedQty.toString();
-            unit = parts.slice(1).join(" ") || "pcs"; // if no unit, default to pcs
+            unit = parts.slice(1).join(" ") || "unit"; // if no unit, default to pcs
           } else {
             // if not a number, assume full measure is unit
             quantity = "1";
             unit = measure;
           }
         }
-
+        // Push the ingredient object to the array
         ingredients.push({
           name,
           quantity,
@@ -99,15 +102,17 @@ const App = () => {
     return ingredients;
   };
 
-
+  // Effect to fetch saved recipes when the component mounts
   const handleRecipeClick = (recipe) => {
     const ingredients = extractIngredients(recipe);
     setSelectedIngredients(ingredients);
     setOriginalServings(4);
     setDesiredServings(4);
     setAdjustedIngredients([]);
-  };
+    setMode("custom"); // ✅ switch view to the custom mode so form shows up
 
+  };
+  // Effect to fetch saved recipes when the component mounts
   const handleCalculation = ({ ingredients, originalServings, desiredServings }) => {
     const factor = desiredServings / originalServings;
     const recalculated = ingredients.map((ingredient) => ({
@@ -117,7 +122,7 @@ const App = () => {
     }));
     setAdjustedIngredients(recalculated);
   };
-
+  // Effect to fetch saved recipes when the component mounts
   const saveRecipe = async () => {
     if (!nameRecipe.trim() || adjustedIngredients.length === 0) {
       setError("Please recalculate the ingredients and name your recipe before saving.");
@@ -125,11 +130,16 @@ const App = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5001/savedrecipes', {
+      const savetoken = localStorage.getItem("token");
+      await axios.post('http://localhost:5001/savedrecipes', {
         name: nameRecipe,
         ingredients: adjustedIngredients,
+        tags, // 
+      }, {
+        headers: {
+          Authorization: `Bearer ${savetoken}`,
+        },
       });
-
       setError("Recipe saved!");
       setRecipeName('');
       setAdjustedIngredients([]);
@@ -215,37 +225,43 @@ const App = () => {
                   )}
 
 
-                  {(mode === "custom" || selectedIngredients.length > 0) && (
-                    <>
-                      <RecipeForm
-                        ingredients={mode === "custom" ? undefined : selectedIngredients}
-                        onCalculate={handleCalculation}
-                        originalServings={originalServings}
-                        desiredServings={desiredServings}
-                        setOriginalServings={setOriginalServings}
-                        setDesiredServings={setDesiredServings}
-                      />
+                  {mode === "custom" && (
+  <>
+    <RecipeForm
+      ingredients={selectedIngredients.length > 0 ? selectedIngredients : undefined}
+      onCalculate={handleCalculation}
+      originalServings={originalServings}
+      desiredServings={desiredServings}
+      setOriginalServings={setOriginalServings}
+      setDesiredServings={setDesiredServings}
+      tags={tags}
+      setTags={setTags}
+      newTag={newTag}
+      setNewTag={setNewTag}
+    />
 
-                      <h2>Adjusted Ingredients:</h2>
-                      <ul>
-                        {adjustedIngredients.map((item, index) => (
-                          <li key={index}>
-                            {item.name}: {item.adjustedQuantity} {item.unit}
-                          </li>
-                        ))}
-                      </ul>
-                      {error && <p style={{ color: "red" }}>{error}</p>}
-                      <input
-                        type="text"
-                        value={nameRecipe}
-                        onChange={(e) => setRecipeName(e.target.value)}
-                        placeholder="Name your recipe"
-                        required
-                      />
-                      <button onClick={saveRecipe}>Save Recipe</button>
+    <h2>Adjusted Ingredients:</h2>
+    <ul>
+      {adjustedIngredients.map((item, index) => (
+        <li key={index}>
+          {item.name}: {item.adjustedQuantity} {item.unit}
+        </li>
+      ))}
+    </ul>
 
-                    </>
-                  )}
+    {error && <p style={{ color: "red" }}>{error}</p>}
+
+    <input
+      type="text"
+      value={nameRecipe}
+      onChange={(e) => setRecipeName(e.target.value)}
+      placeholder="Name your recipe"
+      required
+    />
+    <button onClick={saveRecipe}>Save Recipe</button>
+  </>
+)}
+
                 </>
               ) : (
                 <Navigate to="/login" />
