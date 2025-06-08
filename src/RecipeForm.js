@@ -67,8 +67,20 @@ const token = localStorage.getItem("token");
       console.error("Failed to save recipe:", err);
     }
   };
+const handleReset = () => {
+  setLocalIngredients([{ name: '', quantity: '', unit: '' }]);
+  setOriginalServings('');
+  setDesiredServings('');
+  setTags([]);
+  setNewTag('');
+  onCalculate({
+    ingredients: [],
+    originalServings: 0,
+    desiredServings: 0
+  });
+};
 
-  // Render the form with input fields for original and desired servings, quick convert buttons, and ingredient inputs
+  // Render the form with input fields for original and desired servings, quick convert buttons, ingredient inputs and a reset button 
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -242,6 +254,7 @@ const token = localStorage.getItem("token");
 
 
       <button type="submit">Recalculate</button>
+      <button type ="button" onClick={handleReset}>Reset</button>
     </form>
   );
 };
