@@ -70,7 +70,7 @@ const RecipesSavedSchema = new mongoose.Schema({
   ],
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   tags: [String],
-  imagePath: {type: String},
+  cover: {type: String},
 });
 
 const RecipesSaved = mongoose.model("RecipesSaved", RecipesSavedSchema);
@@ -162,8 +162,9 @@ app.post('/suggestion', async (req, res) => {
 
 
 app.post('/savedrecipes', authenticateToken, async (req, res) => {
-  const { name, ingredients, tags } = req.body;
+  const { name, ingredients, tags, cover } = req.body;
   const userId = req.user.userId;
+  const tagsArray = Array.isArray(tags) ? tags : [];
 
   if (!name || name.trim() === "") {
     return res.status(400).json({ error: "You must name the recipe" });
@@ -171,13 +172,9 @@ app.post('/savedrecipes', authenticateToken, async (req, res) => {
   if (!ingredients || ingredients.length === 0) {
     return res.status(400).json({ error: "Please add ingredients" });
   }
-  if (!Array.isArray(tags)) {
-    return res.status(400).json({ error: "Tags must be an array." });
-  }
-
 
   try {
-    const newRecipe = new RecipesSaved({ name, ingredients, tags, userId });
+    const newRecipe = new RecipesSaved({ name, ingredients, tags, cover, userId });
     await newRecipe.save();
     res.json(newRecipe);
   } catch (err) {
@@ -195,9 +192,9 @@ app.post('/savedrecipes/:id/cover', authenticateToken, upload.single('cover'), a
     if(findRecipe.userId.toString() !== req.user.userId) {
       return res.status(403).json({ error: "You are not authorized to upload a cover for this recipe." });
     }
-    findRecipe.imagePath = req.file.path;//saves the path of the image
+    findRecipe.cover = req.file.path;//saves the path of the image
     await findRecipe.save();
-    res.json({imagePath: findRecipe.imagePath});
+    res.json({cover: findRecipe.cover});
   } catch (err) {
     res.status(500).json({ error: "Uploading a cover has failed. Please try again later." });
   }
@@ -244,21 +241,21 @@ app.get('/protected', authenticateToken, (req, res) => {
   res.json({ message: "You have accessed a protected route!", userId: req.user.userId });
 });
 
-app.get('/user-image/:id'), authenticateToken, async (req, res) => {
+app.get('/user-image/:id', authenticateToken, async (req, res) => {
   try {
-    const cover = await RecipesSaved.findById(req.params.id);
-    if (!cover || !cover.imagePath) {
+    const recipe = await RecipesSaved.findById(req.params.id);
+    if (!recipe || !recipe.cover) {
       return res.status(404).json({ error: "Cover not found" });
     }
-    if(cover.userId.toString() !== req.user.userId){
+    if(recipe.userId.toString() !== req.user.userId){
       return res.status(403).json({ error: "You are not authorized to access this cover." });
     }
-    res.sendFile(path.resolve(cover.imagePath));
+    res.sendFile(path.resolve(recipe.cover));
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Failed to load recipe." });
   }
-}
+});
 
 
 // ✅ Serve React Frontend
