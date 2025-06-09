@@ -36,6 +36,7 @@ dist/
 
 # misc
 .DS_Store
+uploads/
 
 
 # OS files
