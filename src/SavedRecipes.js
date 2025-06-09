@@ -65,7 +65,7 @@ const allTags = Array.from(new Set(
             <button>{recipe.name}</button>
             <p style={{ fontSize: "0.9em", color: "pink" }}>
   Tags:{" "}
-  {recipe.tags?.map((tag, i) => (
+  {Array.isArray(recipe.tags) ? recipe.tags.map((tag, i) => (
     <button
       key={i}
       onClick={(e) => {
@@ -88,7 +88,7 @@ const allTags = Array.from(new Set(
     >
       #{tag}
     </button>
-  ))}
+  )): null}
 </p>
 
 
