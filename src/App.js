@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, Link } from "react-router-dom";
 import axios from "axios";
 import Register from "./Register";
 import Login from "./Login";
@@ -10,6 +10,8 @@ import "./styles/DishcoveryModel.css";
 import SuggestionForum from "./SuggestionForum";
 import SavedRecipes from "./SavedRecipes";
 import Recipefile from "./Recipefile";
+import DeleteAccount from "./DeleteAccount";
+
 
 // Main App component that manages the application state and routing
 const App = () => {
@@ -160,6 +162,9 @@ const App = () => {
             <button onClick={() => setMode("save")}>Saved Recipes</button>
             <button onClick={() => setMode("suggest")}>Suggestion Forum</button>
             <button onClick={handleLogout}>Logout</button>
+            <Link to="/delete-account" >
+      Delete My Account
+    </Link>
           </div>
         )}
 
@@ -172,6 +177,7 @@ const App = () => {
           <Route path="/savedrecipes/:id" element={<Recipefile />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onGuestLogin={handleGuestLogin} />} />
+          <Route path="/delete-account" element={<DeleteAccount />} />
           <Route
             path="/recipes"
             element={
