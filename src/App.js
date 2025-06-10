@@ -45,6 +45,27 @@ const App = () => {
     setIsGuest(false);
     window.location.href = "/login";
   };
+  // Function to handle account deletion
+  const handleAccountDelete = async () => {
+    const ok = window.confirm(
+      "Are you sure you want to delete your account? This will permanently remove all your data."
+    );
+    if (!ok) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete("http://localhost:5001/deleteaccount", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("Your account has been deleted.");
+      handleLogout(); // log out after successful deletion
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete account. Please try again later.");
+    }
+  };
+
+
   // Function to handle guest login
   const handleGuestLogin = () => {
     setIsGuest(true);
@@ -162,9 +183,7 @@ const App = () => {
             <button onClick={() => setMode("save")}>Saved Recipes</button>
             <button onClick={() => setMode("suggest")}>Suggestion Forum</button>
             <button onClick={handleLogout}>Logout</button>
-            <Link to="/delete-account" >
-      Delete My Account
-    </Link>
+           <button onClick={handleAccountDelete}>Delete My Account</button>
           </div>
         )}
 
@@ -177,7 +196,7 @@ const App = () => {
           <Route path="/savedrecipes/:id" element={<Recipefile />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} onGuestLogin={handleGuestLogin} />} />
-          <Route path="/delete-account" element={<DeleteAccount />} />
+
           <Route
             path="/recipes"
             element={
