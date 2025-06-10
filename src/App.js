@@ -178,7 +178,7 @@ const App = () => {
 
         {isAuthenticated && (
           <div style={{ marginBottom: "20px" }}>
-            <button onClick={() => setMode("browse")}>Browse Recipes</button>
+  <button onClick={() => setMode("browse")}>Browse Recipes</button>
             <button onClick={() => setMode("custom")}>Create Your Own</button>
             <button onClick={() => setMode("save")}>Saved Recipes</button>
             <button onClick={() => setMode("suggest")}>Suggestion Forum</button>
@@ -300,7 +300,7 @@ const App = () => {
             position: "fixed",
             bottom: "20px",
             right: "20px",
-            backgroundColor: "#4CAF50",
+            backgroundColor: "#4CAF52",
             color: "white",
             border: "none",
             borderRadius: "50%",
@@ -311,7 +311,7 @@ const App = () => {
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
             zIndex: 999,
           }}
-        >
+        > 👋
         </button>
 
         {showDishcovery && (
