@@ -80,10 +80,30 @@ const Recipefile = () => {
 
 
   // Render the recipe name and its ingredients
+  const handleDelete = async () => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this recipe?");
+  if (!confirmDelete) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    await axios.delete(`http://localhost:5001/savedrecipes/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    alert("Recipe deleted successfully.");
+    navigate("/recipes"); // Redirect to recipe list
+  } catch (err) {
+    console.error("Error deleting recipe:", err);
+    alert("Failed to delete the recipe.");
+  }
+};
+ 
   return (
 
     <div>
       <button onClick={() => navigate("/recipes")}>← Back to Saved Recipes</button>
+      <button onClick={handleDelete}>Delete Recipe</button>
       <h3>{recipe.name}</h3>
 
       {recipe.tags && recipe.tags.length > 0 && (

@@ -254,8 +254,27 @@ app.get('/user-image/:id', authenticateToken, async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Failed to load recipe." });
+  }});
+
+// DELETE /savedrecipes/:id
+app.delete('/savedrecipes/:id', authenticateToken, async (req, res) => {
+  const recipeId = req.params.id;
+  const userId = req.user.userId;
+
+  try {
+    const deleted = await RecipesSaved.deleteOne({ _id: recipeId, userId });
+
+    if (deleted.deletedCount === 0) {
+      return res.status(404).json({ message: "Recipe not found or not authorized." });
+    }
+
+    res.json({ message: "Recipe deleted successfully." });
+  } catch (err) {
+    console.error("Delete error:", err.message);
+    res.status(500).json({ message: "Server error while deleting recipe." });
   }
 });
+
 
 
 // ✅ Serve React Frontend
