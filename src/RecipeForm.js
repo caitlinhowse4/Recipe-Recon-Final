@@ -163,21 +163,21 @@ const handleReset = () => {
           desiredServings: parseFloat(originalServings) / 2,
         })}>
           1/2
-        </button>
+        </button>&nbsp;
         <button type="button" onClick={() => onCalculate({
           ingredients: localIngredients,
           originalServings: parseFloat(originalServings),
           desiredServings: parseFloat(originalServings) / 3,
         })}>
           1/3
-        </button>
+        </button>&nbsp;
         <button type="button" onClick={() => onCalculate({
           ingredients: localIngredients,
           originalServings: parseFloat(originalServings),
           desiredServings: parseFloat(originalServings) / 4,
         })}>
           1/4
-        </button>
+        </button>&nbsp;
         <button type="button" onClick={() => onCalculate({
           ingredients: localIngredients,
           originalServings: parseFloat(originalServings),
@@ -251,9 +251,9 @@ const handleReset = () => {
           Add Ingredient
         </button>
       )}
+      &nbsp;
 
-
-      <button type="submit">Recalculate</button>
+      <button type="submit">Recalculate</button>&nbsp;
       <button type ="button" onClick={handleReset}>Reset</button>
     </form>
   );
