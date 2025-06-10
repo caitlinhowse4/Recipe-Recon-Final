@@ -28,6 +28,10 @@ const App = () => {
   const [error, setError] = useState("");
   const [tags, setTags] = useState([]);
   const [newTag, setNewTag] = useState('');
+  //const [covers, setRecipeCover] = useState([]);
+  const [newCover, setNewCover] = useState('');
+  const [recipeCover, setRecipeCover] = useState(null);
+  //const [error, setError] = useState("");
 
 
   // Function to handle successful login
@@ -101,6 +105,7 @@ const App = () => {
 
     return ingredients;
   };
+
 
   // Effect to fetch saved recipes when the component mounts
   const handleRecipeClick = (recipe) => {
@@ -238,6 +243,8 @@ const App = () => {
       setTags={setTags}
       newTag={newTag}
       setNewTag={setNewTag}
+      covers={setRecipeCover}
+      newCover={setNewCover}
     />
 
     <h2>Adjusted Ingredients:</h2>
@@ -259,6 +266,7 @@ const App = () => {
       required
     />
     <button onClick={saveRecipe}>Save Recipe</button>
+
   </>
 )}
 
