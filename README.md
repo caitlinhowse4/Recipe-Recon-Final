@@ -10,8 +10,10 @@ Recipe recon allows users to
 - Asjust ingredient quantities based on desired servings
 - Save custom recipes with recalculated values
 - Quickly re portion recipes with quick conversion buttons
-- Submit feednack suggestions
+- Submit feedback suggestions
 - Chat with an AI bot for help.
+- Delete custom saved recipes
+- Upload covers to custom saved recipes
 
 ## Technologies that were used
 *Frontend*
@@ -30,8 +32,8 @@ Recipe recon allows users to
 - search for a meal (example: "chicken")
 - Click card and scroll to the bottom to see ingredients
 - Alternatively click "Create your own" and select your ingredients measurements and serving sizes before pressing "Recalculate
-- adjust servings to your prefrence 
-- Click "saved recipe" to browse and veiw your saved recipes
+- adjust servings to your preference 
+- Click "saved recipe" to browse and view your saved recipes
 - Use the suggestion forum to submit feedback
 
 
