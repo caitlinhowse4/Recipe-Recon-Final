@@ -237,6 +237,23 @@ app.delete('/savedrecipes/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// ✅ Delete User Account
+app.delete('/deleteaccount', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    // Delete all the user's saved recipes
+    await RecipesSaved.deleteMany({ userId });
+
+    // Delete the user account
+    await User.findByIdAndDelete(userId);
+
+    res.json({ message: "Account and all data deleted successfully." });
+  } catch (err) {
+    console.error("Error deleting account:", err.message);
+    res.status(500).json({ error: "Failed to delete account." });
+  }
+});
 
 
 // ✅ Serve React Frontend
